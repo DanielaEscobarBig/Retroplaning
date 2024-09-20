@@ -1,0 +1,82 @@
+{% extends 'layauthome.html' %} 
+{% block title %} Proyectos {% endblock %}
+{% block customCSS %} <link rel="stylesheet" href="{{url_for('static', filename='css/proyectos.css')}}"> {% endblock %}
+{% block content %}
+
+<div class="container mt-4">
+    <h1>Clientes, Proyectos, Eventos y Áreas</h1>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Estado del Cliente</th>
+                <th>NIT</th>
+                <th>Fecha Creación Cliente</th>
+                <th>Fecha Actualización Cliente</th>
+                <th>Proyecto</th>
+                <th>Estado del Proyecto</th>
+                <th>Fecha Creación Proyecto</th>
+                <th>Fecha Actualización Proyecto</th>
+                <th>Evento</th>
+                <th>Estado del Evento</th>
+                <th>Fecha Creación Evento</th>
+                <th>Fecha Actualización Evento</th>
+                <th>Área</th>
+                <th>Estado del Área</th>
+                <th>Fecha Asignada</th>
+                <th>Fecha Entrega</th>
+                <th>ID del Evento</th>
+                <th>ID del Área</th>
+                <th>Tipo de Área</th>
+                <th>ID del Usuario</th>
+                <th>Orden</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client_id, cliente in clientes.items() %}
+                {% for proyecto in cliente['proyectos'] %}
+                    {% for evento in proyecto['eventos'] %}
+                        {% for area in evento['areas'] %}
+                            <tr>
+                                {% if loop.index0 == 0 %}
+                                    <td rowspan="{{ cliente['proyectos']|length * proyecto['eventos']|length * evento['areas']|length }}">{{ cliente['name_cli'] }}</td>
+                                    <td rowspan="{{ cliente['proyectos']|length * proyecto['eventos']|length * evento['areas']|length }}">{{ cliente['status_cli'] }}</td>
+                                    <td rowspan="{{ cliente['proyectos']|length * proyecto['eventos']|length * evento['areas']|length }}">{{ cliente['nit'] }}</td>
+                                    <td rowspan="{{ cliente['proyectos']|length * proyecto['eventos']|length * evento['areas']|length }}">{{ cliente['creation_date'] }}</td>
+                                    <td rowspan="{{ cliente['proyectos']|length * proyecto['eventos']|length * evento['areas']|length }}">{{ cliente['update_date'] }}</td>
+                                {% endif %}
+
+                                {% if loop.index0 % (proyecto['eventos']|length * evento['areas']|length) == 0 %}
+                                    <td rowspan="{{ proyecto['eventos']|length * evento['areas']|length }}">{{ proyecto['name_project'] }}</td>
+                                    <td rowspan="{{ proyecto['eventos']|length * evento['areas']|length }}">{{ proyecto['status_project'] }}</td>
+                                    <td rowspan="{{ proyecto['eventos']|length * evento['areas']|length }}">{{ proyecto['creation_date'] }}</td>
+                                    <td rowspan="{{ proyecto['eventos']|length * evento['areas']|length }}">{{ proyecto['update_date'] }}</td>
+                                {% endif %}
+
+                                {% if loop.index0 % evento['areas']|length == 0 %}
+                                    <td rowspan="{{ evento['areas']|length }}">{{ evento['name_events_pro'] }}</td>
+                                    <td rowspan="{{ evento['areas']|length }}">{{ evento['status_events_pro'] }}</td>
+                                    <td rowspan="{{ evento['areas']|length }}">{{ evento['creation_date'] }}</td>
+                                    <td rowspan="{{ evento['areas']|length }}">{{ evento['update_date'] }}</td>
+                                {% endif %}
+
+                                <td>{{ area['area_id'] }}</td>
+                                <td>{{ area['status_area'] }}</td>
+                                <td>{{ area['assigned_date'] }}</td>
+                                <td>{{ area['delivery_date'] }}</td>
+                                <td>{{ area['events_pro_id'] }}</td>
+                                <td>{{ area['area_id'] }}</td>
+                                <td>{{ area['area_type_id'] }}</td>
+                                <td>{{ area['user_id'] }}</td>
+                                <td>{{ area['orden'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,52 @@
+
+html,
+body {
+  height: 100%;
+  
+  
+}
+
+.form-signin {
+  max-width: 500px;
+  padding: 4rem;
+  text-align: center;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  
+ 
+
+
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+  
+}
+
+.form-signin input[type="email"] {
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  
+  
+  
+
+
+  
+  }
+
+
+.form-signin input[type="password"] {
+  margin-left: auto;
+  margin-right: auto;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  
+  
+  
+
+
+  
+}

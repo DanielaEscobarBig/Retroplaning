@@ -1,0 +1,46 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+body {
+    display: flex;
+    flex-direction: column;
+}
+.navbar {
+    z-index: 1;
+    flex-shrink: 0;
+    
+}
+.wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    margin-top: 56px; /* Altura de la barra superior */
+}
+.sidebar {
+    width: 250px;
+    background-color: #343a40;
+    color: #fff;
+    height: calc(100vh - 56px); /* Ajuste para la altura de la barra superior */
+    overflow-y: auto;
+    position: fixed; /* Barra lateral fija en el lado izquierdo */
+    top: 56px; /* Debajo de la barra superior */
+    left: 0;
+    
+}
+.content {
+    margin-left: 250px; /* Espacio dejado para la barra lateral */
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto;
+    height: calc(100vh - 56px); /* Ajuste para la altura de la barra superior */
+    box-sizing: border-box;
+}
+footer {
+    background-color: #343a40;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    position: relative;
+    z-index: 1;
+}

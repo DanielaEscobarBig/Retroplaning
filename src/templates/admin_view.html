@@ -1,0 +1,161 @@
+{% extends 'layauthome.html' %} 
+{% block title %} Admin {% endblock %}
+{% block customCSS %} <link rel="stylesheet" href="{{url_for('static', filename='css/proyectos.css')}}"> {% endblock %}
+{% block content %}
+
+<div class="container mt-4">
+    <h1>Administración: Crear y Modificar Elementos</h1>
+
+    <form method="POST" action="{{ url_for('admin_view') }}">
+        <!-- Selector de tipo de elemento -->
+        <div class="form-group">
+            <label for="tipo_elemento">Tipo de Elemento a Gestionar</label>
+            <select class="form-control" id="tipo_elemento" name="tipo_elemento" required>
+                <option value="">Selecciona el tipo</option>
+                <option value="cliente">Cliente</option>
+                <option value="usuario">Usuario</option>
+                <option value="proyecto">Proyecto</option>
+                <option value="evento">Evento</option>
+                <option value="area">Área</option>
+            </select>
+        </div>
+
+        <!-- Formulario para Cliente -->
+        <div id="form_cliente" class="element-form d-none">
+            <h3>Formulario Cliente</h3>
+            <div class="form-group">
+                <label for="name_cli">Nombre del Cliente</label>
+                <input type="text" class="form-control" id="name_cli" name="name_cli" required>
+            </div>
+            <div class="form-group">
+                <label for="nit">NIT</label>
+                <input type="text" class="form-control" id="nit" name="nit" required>
+            </div>
+            <div class="form-group">
+                <label for="status_cli">Estado</label>
+                <select class="form-control" id="status_cli" name="status_cli">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Formulario para Usuario -->
+        
+        <div id="form_usuario" class="element-form d-none">
+            <h3>Formulario Usuario</h3>
+            
+            <div class="form-group">
+                <label for="name_user">Nombre del Usuario</label>
+                <input type="text" class="form-control" id="name_user" name="name_user" required>
+            </div>
+            <div class="form-group">
+                <label for="e_mail">Email</label>
+                <input type="email" class="form-control" id="e_mail" name="e_mail" required>
+            </div>
+            <div class="form-group">
+                <label for="password_user">Contraseña</label>
+                <input type="password" class="form-control" id="password_user" name="password_user" required>
+            </div>
+            <div class="form-group">
+                <label for="role_id">Rol</label>
+                <select class="form-control" id="role_id" name="role_id">
+                    <option value="1">Administrador</option>
+                    <option value="2">Project Manager</option>
+                    <option value="3">Lider de área</option>
+                </select>
+            </div>
+            <div class="form-group"></div>
+                <label for="status_user">Status del Usuario</label>
+                <select class="form-control" id="role_id" name="role_id">
+                    <option value="1">Activo</option>
+                    <option value="2">Inactivo</option>
+                    
+                </select>
+            </div>
+        </div>
+
+        <!-- Formulario para Proyecto -->
+        project_id, name_project, status_project, user_id,client_id, creation_date, update_date
+        <div id="form_proyecto" class="element-form d-none">
+            <h3>Formulario Proyecto</h3>
+            <div class="form-group">
+                <label for="project_id">ID Proyecto (Opcional)</label>
+                <input type="text" class="form-control" id="project_id" name="project_id" placeholder="ID del Proyecto para modificar">
+            </div>
+            <div class="form-group">
+                <label for="name_project">Nombre del Proyecto</label>
+                <input type="text" class="form-control" id="name_project" name="name_project" required>
+            </div>
+            <div class="form-group">
+                <label for="status_project">Estado</label>
+                <select class="form-control" id="status_project" name="status_project">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Formulario para Evento -->
+        <div id="form_evento" class="element-form d-none">
+            <h3>Formulario Evento</h3>
+            <div class="form-group">
+                <label for="events_pro_id">ID Evento (Opcional)</label>
+                <input type="text" class="form-control" id="events_pro_id" name="events_pro_id" placeholder="ID del Evento para modificar">
+            </div>
+            <div class="form-group">
+                <label for="name_events_pro">Nombre del Evento</label>
+                <input type="text" class="form-control" id="name_events_pro" name="name_events_pro" required>
+            </div>
+            <div class="form-group">
+                <label for="status_events_pro">Estado</label>
+                <select class="form-control" id="status_events_pro" name="status_events_pro">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Formulario para Área -->
+        <div id="form_area" class="element-form d-none">
+            <h3>Formulario Área</h3>
+            <div class="form-group">
+                <label for="area_id">ID Área (Opcional)</label>
+                <input type="text" class="form-control" id="area_id" name="area_id" placeholder="ID del Área para modificar">
+            </div>
+            <div class="form-group">
+                <label for="status_area">Estado del Área</label>
+                <select class="form-control" id="status_area" name="status_area">
+                    <option value="1">Activo</option>
+                    <option value="0">Inactivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="assigned_date">Fecha Asignada</label>
+                <input type="date" class="form-control" id="assigned_date" name="assigned_date" required>
+            </div>
+            <div class="form-group">
+                <label for="delivery_date">Fecha de Entrega</label>
+                <input type="date" class="form-control" id="delivery_date" name="delivery_date" required>
+            </div>
+        </div>
+
+        <!-- Botón de envío -->
+        <button type="submit" class="btn btn-primary mt-4">Guardar</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('tipo_elemento').addEventListener('change', function() {
+        const tipo = this.value;
+        document.querySelectorAll('.element-form').forEach(form => form.classList.add('d-none'));
+        if (tipo) {
+            document.getElementById(`form_${tipo}`).classList.remove('d-none');
+        }
+    });
+</script>
+
+
+
+
+{% endblock %}

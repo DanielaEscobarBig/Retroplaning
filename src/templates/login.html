@@ -1,0 +1,47 @@
+{% extends 'layaut.html' %} 
+{% block title %} Login {% endblock %}
+{% block customCSS %} <link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}"> {% endblock %}
+{% block body %}  
+
+    
+
+
+<form class="form-signin m-auto "  action="/login" method="POST" >
+    <img class="mb-4" src="\static\img\Designer.JPEG" alt="" width="200" height="200">
+    {% with messages = get_flashed_messages() %}
+
+    {% if messages %}
+    <br />
+    {% for message in messages %}
+    <div class="alert alert-primary alert-dismissible" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% endwith %}
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="form-floating">
+    <input type="email" class="form-control" id="floatingInput" name="e_mail" placeholder="name@example.com">
+    <label for="floatingInput">Email address</label>
+    </div>
+    <div class="form-floating">
+    <input type="password" class="form-control" id="floatingPassword" name="password_user" placeholder="Password">
+    <label for="floatingPassword">Password</label>
+    </div>
+
+    <div class="form-check text-start my-3">
+    <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+    <label class="form-check-label" for="flexCheckDefault">
+        Remember me
+    </label>
+    </div>
+    <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+    
+</form>
+
+
+  {% endblock %}
