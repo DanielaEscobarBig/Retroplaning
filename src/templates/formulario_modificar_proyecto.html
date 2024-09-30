@@ -1,0 +1,51 @@
+{% extends 'layauthome.html' %} 
+{% block title %} Proyectos {% endblock %}
+{% block customCSS %} <link rel="stylesheet" href="{{url_for('static', filename='css/proyectos.css')}}"> {% endblock %}
+{% block content %}
+         
+<body>
+    <div class="container mt-4">
+        <h1>Modificar Proyecto</h1>
+    
+        <form action="{{ url_for('formulario_modificar_proyecto', id_project=proyecto['project_id']) }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="project_id">ID del Proyecto:</label>
+                <input type="text" id="project_id" name="project_id" class="form-control" value="{{ proyecto['project_id'] }}" readonly>
+            </div>
+        
+            <div class="form-group">
+                <label for="name_project">Nombre del Proyecto:</label>
+                <input type="text" id="name_project" name="name_project" class="form-control" value="{{ proyecto['name_project'] }}">
+            </div>
+        
+            <div class="form-group">
+                <label for="status_project">Estado del Proyecto:</label>
+                <select id="status_project" name="status_project" class="form-control">
+                    <option value="1" {% if proyecto['status_project'] %} selected {% endif %}>Activo</option>
+                    <option value="2" {% if not proyecto['status_project'] %} selected {% endif %}>Inactivo</option>
+                </select>
+            </div>
+        
+            <div class="form-group">
+                <label for="user_id">ID del Usuario:</label>
+                <input type="text" id="user_id" name="user_id" class="form-control" value="{{ proyecto['user_id'] }}">
+            </div>
+        
+            <div class="form-group">
+                <label for="client_id">ID del Cliente:</label>
+                <input type="text" id="client_id" name="client_id" class="form-control" value="{{ proyecto['client_id'] }}">
+            </div>
+        
+        
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+            
+            
+    </div>
+
+
+{% endblock %}
+
+
+

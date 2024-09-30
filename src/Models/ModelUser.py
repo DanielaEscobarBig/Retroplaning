@@ -1,5 +1,6 @@
 from .entities.User import User
 
+
 class ModelUser():
 
     @classmethod
@@ -38,3 +39,29 @@ class ModelUser():
                 return None
         except Exception as ex:
             raise Exception(ex)
+        
+
+    
+    @staticmethod
+    def obtener_cliente_por_id(db):
+        cursor = db.connection.cursor()
+        sql = "SELECT client_id, name_cli, status_cli, nit, creation_date, update_date FROM clients"
+        cursor.execute(sql)
+        datos = cursor.fetchall()
+        clientes = []
+        for fila in datos:
+            cliente = {
+                'client_id': fila[0], 
+                'name_cli': fila[1], 
+                'status_cli': fila[2], 
+                'nit': fila[3],
+                'creation_date': fila[4],
+                'update_date': fila[5]
+                }
+            clientes.append(cliente)
+
+        return clientes
+    
+
+
+

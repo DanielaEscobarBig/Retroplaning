@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for, flash , jsonify
+from flask import Flask, redirect, render_template, request, url_for, flash , jsonify, session
 from flask_mysqldb import MySQL
 
 from flask_wtf.csrf import CSRFProtect
@@ -49,7 +49,6 @@ def login():
         if logged_user != None:
             if logged_user.password_user:
                 login_user(logged_user)
-                print(current_user.user_id)
                 return redirect(url_for('protected'))
             else:
                 flash("Invalid password...")
@@ -114,6 +113,9 @@ def protected():
                         proyectos_del_cliente = [proyecto for proyecto in proyectos if proyecto['client_id'] == client_id]
                         cliente['proyectos'] = proyectos_del_cliente  # Añadir los proyectos al cliente
                         clientes_con_proyectos[client_id] = cliente  # Utilizar client_id como clave
+                    
+                    session['clientes'] = clientes
+                        
 
                     # Enviar la estructura jerárquica a la vista
                     return render_template('protected.html', clientes=clientes_con_proyectos)
@@ -125,43 +127,93 @@ def protected():
             return render_template('error.html', mensaje="Error al obtener los eventos.")
     else:
         return render_template('error.html', mensaje="Error al obtener las áreas.")
+
+
+
+
+@app.route('/admin_view')
+def admin_view():
+    lista_clientes = ModelUser.obtener_cliente_por_id(db)  
+    areas = ModelArea.Traer_Areas_Lider(db, current_user)
+
+    if areas:
+        # Obtener los eventos relacionados con las áreas
+        eventos = ModelEvent.Traer_Event_Lider(db, areas)
+
+        if eventos:
+            # Obtener los proyectos relacionados con los eventos
+            proyectos = ModelProject.get_proyectos_por_usuario(db, eventos)
+
+            if proyectos:
+                # Obtener los clientes relacionados con los proyectos
+                clientes = ModelCliente.get_clientes_por_proyecto(db, proyectos)
+
+                if clientes:
+                    # Agrupar áreas dentro de los eventos
+                    eventos_con_areas = {}
+                    for evento in eventos:
+                        evento_id = evento['events_pro_id']
+                        # Filtrar las áreas que pertenecen a este evento
+                        areas_del_evento = [area for area in areas if area['events_pro_id'] == evento_id]
+                        evento['areas'] = areas_del_evento  # Añadir las áreas al evento
+                        eventos_con_areas[evento_id] = evento
+                    
+                    # Agrupar los eventos dentro de los proyectos
+                    proyectos_con_eventos = {}
+                    for proyecto in proyectos:
+                        proyecto_id = proyecto['project_id']
+                        # Filtrar los eventos que pertenecen a este proyecto
+                        eventos_del_proyecto = [evento for evento in eventos if evento['project_id'] == proyecto_id]
+                        proyecto['eventos'] = eventos_del_proyecto  # Añadir los eventos al proyecto
+                        proyectos_con_eventos[proyecto_id] = proyecto
+
+                    # Agrupar los proyectos dentro de los clientes
+                    clientes_con_proyectos = {}
+                    for cliente in clientes:
+                        client_id = cliente['client_id']
+                        # Filtrar los proyectos que pertenecen a este cliente
+                        proyectos_del_cliente = [proyecto for proyecto in proyectos if proyecto['client_id'] == client_id]
+                        cliente['proyectos'] = proyectos_del_cliente  # Añadir los proyectos al cliente
+                        clientes_con_proyectos[client_id] = cliente  # Utilizar client_id como clave
+                    
+                    session['clientes'] = clientes
+                        
+
+                    # Enviar la estructura jerárquica a la vista
+                    return render_template('admin_view.html', lista_clientes=lista_clientes, clientes=clientes_con_proyectos)
+                else:
+                    return render_template('error.html', mensaje="Error al obtener los clientes.")
+            else:
+                return render_template('error.html', mensaje="Error al obtener los proyectos.")
+        else:
+            return render_template('error.html', mensaje="Error al obtener los eventos.")
+    else:
+        return render_template('error.html', mensaje="Error al obtener las áreas.")
     
 
-@app.route('/admin_view', methods=['GET', 'POST'])
-@login_required
-def admin_view():
-      
-    if current_user.role_id != 1:
-        flash("Acceso denegado. Solo los administradores pueden acceder.")
-        return redirect(url_for('protected'))
+@app.route('/admin_crear')
+def admin_crear():
+    return render_template('admin_crear.html')
+
+
+@app.route('/formulario_modificar_proyecto/<int:id_project>', methods=['GET', 'POST'])
+def formulario_modificar_proyecto(id_project):
+
+    proyecto = ModelProject.obtener_proyectos_para_admin(db,id_project)
 
     if request.method == 'POST':
-        # Procesar la creación o modificación de los elementos aquí
-        # Obtener datos del formulario
-        tipo_elemento = request.form.get('tipo_elemento')
+        nombre_proyecto = request.form['name_project']
+        estado_proyecto = request.form['status_project'] 
+        client_id = request.form['client_id']
+        user_id = request.form['user_id']
+       
+        ModelProject.actualizar_proyecto(id_project, nombre_proyecto, estado_proyecto, user_id, client_id)
 
-        if tipo_elemento == "cliente":
-            # Crear o modificar cliente
-            cliente_id = request.form.get('cliente_id')
-            nombre_cliente = request.form.get('nombre_cliente')
-            nit = request.form.get('nit')
-            status_cli = request.form.get('status_cli')
-            # Lógica para crear o actualizar el cliente
-        elif tipo_elemento == "usuario":
-            # Crear o modificar usuario
-            user_id = request.form.get('user_id')
-            nombre_usuario = request.form.get('nombre_usuario')
-            email = request.form.get('email')
-            role_id = request.form.get('role_id')
-            # Lógica para crear o actualizar el usuario
-        
-        flash('Elemento procesado correctamente')
-        return redirect(url_for('admin_view'))
-    
-    # Si es una solicitud GET, mostrar el formulario vacío
-    return render_template('admin_view.html')
-    
-        
+
+    # Mostramos el formulario con los datos actuales del proyecto
+    return render_template('formulario_modificar_proyecto.html', proyecto=proyecto)
+
+
 
 def new_func():
     return User
